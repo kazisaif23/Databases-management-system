@@ -1,0 +1,47 @@
+2. University schema:
+Student(StudentID, StudentName, DOB, Gender, Address, Phone, Email,
+DpartmentID)
+Department(DepartmentID, DepartmentName, HeadOfDepartment,
+FacultyCount)
+Course(CourseID, CourseName, Credits, DepartmentID)
+Faculty(FacultyID, FacultyMemberName, Designation, Email,Phone,
+DepartmentID)
+Enrollment(EnrollmentID, StudentID, CourseID, Semester, Grade)
+Classroom(RoomNumber, Building, Capacity)
+
+1. Find the department with highest number of student.
+
+SELECT DepartmentID, COUNT(*) AS StudentCount
+FROM Student
+GROUP BY DepartmentID
+HAVING COUNT(*) = (
+SELECT MAX(StudentCount)
+FROM (
+SELECT DepartmentID, COUNT(*) AS StudentCount
+FROM Student
+GROUP BY DepartmentID
+) AS DeptCounts
+);
+
+2. Retrieve students who have taken more than 3 courses.
+
+SELECT s.StudentID, s.StudentName, COUNT(e.CourseID) AS CourseCount
+FROM Student s
+JOIN Enrollment e ON s.StudentID = e.StudentID
+GROUP BY s.StudentID
+HAVING COUNT(e.CourseID) > 3
+LIMIT 2;
+
+3.Find students who have taken at least one course and got an ‘F’.
+
+SELECT DISTINCT s.StudentID, s.StudentName
+FROM Enrollment e
+JOIN Student s ON e.StudentID = s.StudentID
+WHERE e.Grade = 'F';
+
+4. Find the total number students enrolled in each course.
+
+SELECT c.CourseName, COUNT(e.StudentID) AS TotalEnrolled
+FROM Course c
+LEFT JOIN Enrollment e ON c.CourseID = e.CourseID
+GROUP BY c.CourseID;
