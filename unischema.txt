@@ -1,0 +1,115 @@
+CREATE TABLE Department (
+    DepartmentID VARCHAR(50) NOT NULL PRIMARY KEY,
+    DepartmentName VARCHAR(50),
+    HeadOfDepartment VARCHAR(50),
+    FacultyCount INT
+);
+
+CREATE TABLE Student (
+    StudentID INT NOT NULL PRIMARY KEY,
+    StudentName VARCHAR(50),
+    DOB DATE,
+    Gender VARCHAR(50),
+    Address VARCHAR(50),
+    Phone INT,
+    Email VARCHAR(50),
+    DepartmentID VARCHAR(50),
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Course (
+    CourseID INT NOT NULL PRIMARY KEY,
+    CourseName VARCHAR(50),
+    Credits INT,
+    DepartmentID VARCHAR(50),
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID) ON DELETE CASCADE
+);
+
+CREATE TABLE Faculty (
+    FacultyID INT NOT NULL PRIMARY KEY,
+    FacultyMemberName VARCHAR(50),
+    Designation VARCHAR(50),
+    Email VARCHAR(100),
+    Phone INT,
+    DepartmentID VARCHAR(50),
+    FOREIGN KEY (DepartmentID) REFERENCES Department(DepartmentID) ON DELETE CASCADE
+);
+
+CREATE TABLE Enrollment (
+    EnrollmentID INT PRIMARY KEY NOT NULL,
+    StudentID INT,
+    CourseID INT,
+    Semester VARCHAR(50),
+    Grade VARCHAR(50),
+    FOREIGN KEY (StudentID) REFERENCES Student(StudentID) ON DELETE CASCADE,
+    FOREIGN KEY (CourseID) REFERENCES Course(CourseID) ON DELETE CASCADE
+);
+
+
+CREATE TABLE Classroom (
+    RoomNumber VARCHAR(50) NOT NULL PRIMARY KEY,
+    Building VARCHAR(50),
+    Capacity INT
+);
+
+
+--INSERTION
+
+INSERT INTO Department VALUES
+('D1', 'CSE', 'Dr. Hasan', 20),
+('D2', 'EEC', 'Dr. Habib', 15),
+('D3', 'BBA', 'Dr. Kamal', 10),
+('D4', 'SWE', 'Dr. Rana', 12);
+
+
+INSERT INTO Student VALUES
+(101, 'Anis', '2000-01-01', 'Male', 'Dhaka', 01711111111, 'anis@email.com', 'D1'),
+(102, 'Shahin', '2000-02-02', 'Male', 'Dhaka', 01722222222, 'shahin@email.com', 'D1'),
+(103, 'Rifat', '2000-03-03', 'Male', 'Dhaka', 01733333333, 'rifat@email.com', 'D2'),
+(104, 'Fahim', '2000-04-04', 'Male', 'Dhaka', 01744444444, 'fahim@email.com', 'D3'),
+(105, 'Rubi', '2000-05-05', 'Female', 'Dhaka', 01755555555, 'rubi@email.com', 'D4');
+
+INSERT INTO Faculty VALUES
+(201, 'Tania', 'Lecturer', 'tania@uni.com', 01811111111, 'D1'),
+(202, 'Asif', 'Professor', 'asif@uni.com', 01822222222, 'D2'),
+(203, 'Shihab', 'Associate Prof', 'shihab@uni.com', 01833333333, 'D3');
+
+INSERT INTO Course VALUES
+(301, 'CSE', 3, 'D1'),
+(302, 'EEC', 3, 'D2'),
+(303, 'BBA', 3, 'D3'),
+(304, 'SWE', 3, 'D4');
+
+-- Anis: 4 courses, 1 with F
+INSERT INTO Enrollment VALUES
+(401, 101, 301, 'Fall', 'A+'),
+(402, 101, 302, 'Fall', 'A'),
+(403, 101, 303, 'Fall', 'F'),
+(404, 101, 304, 'Fall', 'B');
+
+-- Shahin: 4 courses, 1 with F
+INSERT INTO Enrollment VALUES
+(405, 102, 301, 'Fall', 'B'),
+(406, 102, 302, 'Fall', 'F'),
+(407, 102, 303, 'Fall', 'A'),
+(408, 102, 304, 'Fall', 'A+');
+
+-- Rifat: 2 courses
+INSERT INTO Enrollment VALUES
+(409, 103, 301, 'Fall', 'A'),
+(410, 103, 302, 'Fall', 'B');
+
+-- Fahim: 1 course
+INSERT INTO Enrollment VALUES
+(411, 104, 303, 'Fall', 'A');
+
+-- Rubi: 2 courses
+INSERT INTO Enrollment VALUES
+(412, 105, 304, 'Fall', 'B'),
+(413, 105, 301, 'Fall', 'A+');
+
+INSERT INTO Classroom VALUES
+('R101', 'Main Building', 40),   -- For CSE (CourseID 301)
+('R202', 'Engineering Block', 35), -- For EEC (CourseID 302)
+('R303', 'Business Tower', 30);   -- For BBA (CourseID 303)
