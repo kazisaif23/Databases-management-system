@@ -1,0 +1,70 @@
+employee(EmployeeID, EmployeeName, City)
+works(EmployeeID, CompanyName, Salary)
+company(Company_name, City)
+manages(EmployeeID, ManagerID)
+
+1.Find the company that has the most employees.
+
+SELECT CompanyName
+FROM Works
+GROUP BY CompanyName
+HAVING COUNT(*) = (
+SELECT MAX(emp_count)
+FROM (
+SELECT CompanyName, COUNT(*) AS emp_count
+FROM Works
+GROUP BY CompanyName
+) AS sub
+);
+
+2.Find employees who don’t have manager:
+
+SELECT e.EmployeeID, e.EmployeeName
+FROM Employee e
+LEFT JOIN Manages m ON e.EmployeeID = m.EmployeeID
+WHERE m.ManagerID IS NULL;
+
+3.Find the second highest salary among the employes
+
+SELECT MAX(Salary) AS SecondHighest
+FROM Works
+WHERE Salary < (
+SELECT MAX(Salary) FROM Works
+);
+or
+SELECT DISTINCT Salary
+FROM Works
+ORDER BY Salary DESC
+LIMIT 1 OFFSET 1;
+
+4.Find all employees who live in dhaka city, but their company is not in dhaka
+
+SELECT e.EmployeeName, e.City AS EmployeeCity, c.City AS CompanyCity
+FROM Employee e
+JOIN Works w ON e.EmployeeID = w.EmployeeID
+JOIN Company c ON w.CompanyName = c.CompanyName
+WHERE e.City = 'Dhaka' AND c.City <> 'Dhaka';
+
+5.Find companies with more than 5 employees
+
+SELECT CompanyName, COUNT(*) as NumEmployees
+FROM Works
+GROUP BY CompanyName
+HAVING COUNT(*) > 5;
+
+6.Give all employees of first bank corporation a 20% salary raise
+
+UPDATE Works
+SET Salary = Salary * 1.20
+WHERE CompanyName = 'First Bank Corporation';
+
+7.Delete all records where an employee has no manager
+
+DELETE from Manages
+WHERE ManagerID IS NULL;
+
+8.Assign a new manager to employees who currently have no manager.
+
+UPDATE Manages
+SET ManagerID = 3
+WHERE ManagerID IS NULL;
