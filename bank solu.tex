@@ -1,0 +1,70 @@
+               1. Bank schema:
+Branch(BranchName, BranchCity, Assets) Customer(CustomerID,
+CustomerName, CustomerStreet, CustomerCity)
+Account(AccountNumber, BranchName, Balance) 
+Loan(LoanNumber,BranchName, Amount)
+Depositor(CustomerID, AccountNumber)
+Borrower(CustomerID, LoanNumber)
+
+
+1. Retrieve distinct customers who have either an account or a loan:
+SELECT DISTINCT CustomerID, CustomerName
+FROM Customer
+WHERE CustomerID IN (
+SELECT CustomerID FROM Depositor
+UNION
+SELECT CustomerID FROM Borrower
+);
+
+2. Retrieve the branch with the maximum number of accounts:
+SELECT BranchName
+FROM Account
+GROUP BY BranchName
+HAVING COUNT(*) = (
+SELECT MAX(AccountCount)
+FROM (
+SELECT COUNT(*) AS AccountCount
+FROM Account
+GROUP BY BranchName
+) AS BranchCounts
+);
+
+3. Find the maximum loan amount issued in each branch:
+SELECT BranchName, MAX(Amount) AS MaxLoan
+FROM Loan
+GROUP BY BranchName;
+
+4. Find customers whose name starts with 'A'
+SELECT CustomerID, CustomerName
+FROM Customer
+WHERE CustomerName LIKE 'A%';
+
+5. Delete all loan amounts between 5000 and 15000:
+DELETE FROM Loan
+WHERE Amount BETWEEN 5000 AND 15000;
+
+6. Find branches that have no accounts:
+SELECT BranchName
+FROM Branch
+WHERE BranchName NOT IN (
+SELECT DISTINCT BranchName FROM Account
+);
+
+7. Find branches where total loan amount is greater than 50,000:
+SELECT BranchName, SUM(Amount) AS TotalLoan
+FROM Loan
+GROUP BY BranchName
+HAVING SUM(Amount) > 50000;
+
+8. Deduct service charge: 3% if customer has both loan and account, else 5%:
+UPDATE Account
+SET Balance = Balance * (
+CASE
+WHEN AccountNumber IN (
+SELECT d.AccountNumber
+FROM Depositor d
+JOIN Borrower b ON d.CustomerID = b.CustomerID
+) THEN 0.97
+ELSE 0.95
+END
+);
