@@ -1,0 +1,82 @@
+--creation 
+
+
+-- Employee table
+CREATE TABLE Employee (
+    EmployeeID INT NOT NULL PRIMARY KEY,
+    EmployeeName VARCHAR(50),
+    City VARCHAR(50)
+);
+
+-- Company table
+CREATE TABLE Company (
+    CompanyName VARCHAR(50) NOT NULL PRIMARY KEY,
+    City VARCHAR(50)
+);
+
+-- Works table
+CREATE TABLE Works (
+    EmployeeID INT,
+    CompanyName VARCHAR(50),
+    Salary DOUBLE,
+    PRIMARY KEY (EmployeeID, CompanyName),
+    FOREIGN KEY (EmployeeID) REFERENCES Employee(EmployeeID) ON DELETE CASCADE,
+    FOREIGN KEY (CompanyName) REFERENCES Company(CompanyName) ON DELETE CASCADE
+);
+
+-- Manages table
+CREATE TABLE Manages (
+    EmployeeID INT,
+    ManagerID INT,
+    PRIMARY KEY (EmployeeID),
+    FOREIGN KEY (EmployeeID) REFERENCES Employee(EmployeeID) ON DELETE CASCADE,
+    FOREIGN KEY (ManagerID) REFERENCES Employee(EmployeeID) ON DELETE CASCADE
+);
+
+
+
+
+--INSERTION
+
+INSERT INTO Employee VALUES
+(1, 'Anis', 'Dhaka'),
+(2, 'Akash', 'Dhaka'),
+(3, 'Sajid', 'Chittagong'),
+(4, 'Rifat', 'Sylhet'),
+(5, 'Shahin', 'Khulna'),
+(6, 'Fahim', 'Barisal'),
+(7, 'Shihab', 'Rajshahi'),
+(8, 'Hasib', 'Dhaka'),
+(9, 'Rubi', 'Dhaka');
+
+
+INSERT INTO Company VALUES
+('First Bank Corporation', 'Chittagong'),
+('TechNova Ltd', 'Dhaka'),
+('DataSoft', 'Sylhet'),
+('SkyNet', 'Khulna');
+
+
+INSERT INTO Works VALUES
+(1, 'First Bank Corporation', 50000),
+(2, 'First Bank Corporation', 60000),
+(3, 'First Bank Corporation', 60000), -- 2nd highest
+(4, 'First Bank Corporation', 70000), -- highest
+(5, 'First Bank Corporation', 60000), -- 2nd highest
+(6, 'First Bank Corporation', 55000),
+(7, 'TechNova Ltd', 40000),
+(8, 'DataSoft', 60000), -- 2nd highest
+(9, 'SkyNet', 45000);
+
+
+INSERT INTO Manages VALUES
+(1, NULL),
+(2, NULL),
+(3, 4),
+(4, 5),
+(5, NULL),
+(6, 4),
+(7, NULL),
+(8, 3),
+(9, 3);
+
